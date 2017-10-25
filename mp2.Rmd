@@ -10,6 +10,7 @@ output: html_document
 
 This project is so interesting and relevant to my life!
 Monday is the worst.
+Wed
 
 ```{r, include=FALSE}
 load("house_elections.rda")

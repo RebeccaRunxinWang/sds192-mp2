@@ -37,6 +37,7 @@ committees_contribution <- committees %>%
   left_join(contributions, by = "cmte_id")
 ```
 
+
 ```{r}
 FL_win <- house_elections %>%
   filter(state == "FL") %>%
@@ -45,10 +46,17 @@ FL_win <- house_elections %>%
   summarise(N = n(),
             r = sum(party == "R")) %>%
   mutate(r_percentage = r/N)
+
 ```
 
 ```{r}
+new_file <- committees_contribution %>%
+  select("transaction_amt", "cand_id.y", "city", "name", "state", "memo_cd", "memo_text")
+```
 
+```{r}
+committees_contribution <- committees %>%
+  left_join(contributions, by = "cmte_id")
 ```
 
 ```{r}
@@ -59,4 +67,3 @@ committees_contribution <- rename(committees_contribution, replace=c("cand_id.y"
 committees_contribution_2 <- committees_contribution %>%
   right_join(candidates, by = "cand_id")
 ```
-

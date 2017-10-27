@@ -21,7 +21,12 @@ load("contributions.rda")
 ```
 
 ```{r}
-win <- house_elections %>%
-  filter(general_votes != 0)
+general_votes <- house_elections %>%
+  filter(general_votes != 0) 
+```
+
+```{r}
+committees_contribution <- committees %>%
+  left_join(contributions, by = "cmte_id")
 ```
 

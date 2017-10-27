@@ -51,3 +51,12 @@ FL_win <- house_elections %>%
 
 ```
 
+```{r}
+committees_contribution <- rename(committees_contribution, replace=c("cand_id.y"="cand_id"))
+```
+
+```{r}
+committees_contribution_2 <- committees_contribution %>%
+  right_join(candidates, by = "cand_id")
+```
+

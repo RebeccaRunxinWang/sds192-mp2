@@ -37,13 +37,25 @@ committees_contribution <- committees %>%
   left_join(contributions, by = "cmte_id")
 ```
 
+
 ```{r}
-win <- house_elections %>%
-  filter(ge_winner == "W") %>%
-  filter(party == c("R", "D"))
+general_votes <- house_elections %>%
+  filter(general_votes != 0) 
 ```
 
 ```{r}
+committees_contribution <- committees %>%
+  left_join(contributions, by = "cmte_id")
+```
 
+```{r}
+new_file <- committees_contribution %>%
+  select("transaction_amt", "cand_id.y", "city", "name", "state", "memo_cd", "memo_text")
+```
+
+```{r}
+FL_win <- house_elections %>%
+  filter(ge_winner == "W") %>%
+  filter(state == "FL")
 ```
 

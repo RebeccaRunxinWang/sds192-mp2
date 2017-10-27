@@ -44,6 +44,12 @@ win <- house_elections %>%
 ```
 
 ```{r}
-
+FL_win <- house_elections %>%
+  filter(state == "FL") %>%
+  filter(ge_winner == "W") %>%
+  filter(party == "R"| party == "D") %>%
+  summarise(N = n(),
+            r = sum(party == "R")) %>%
+  mutate(r_percentage = r/N)
 ```
 

@@ -39,13 +39,14 @@ committees_contribution <- committees %>%
 
 
 ```{r}
-general_votes <- house_elections %>%
-  filter(general_votes != 0) 
-```
+FL_win <- house_elections %>%
+  filter(state == "FL") %>%
+  filter(ge_winner == "W") %>%
+  filter(party == "R"| party == "D") %>%
+  summarise(N = n(),
+            r = sum(party == "R")) %>%
+  mutate(r_percentage = r/N)
 
-```{r}
-committees_contribution <- committees %>%
-  left_join(contributions, by = "cmte_id")
 ```
 
 ```{r}
@@ -54,8 +55,9 @@ new_file <- committees_contribution %>%
 ```
 
 ```{r}
-FL_win <- house_elections %>%
-  filter(ge_winner == "W") %>%
-  filter(state == "FL")
+committees_contribution <- committees %>%
+  left_join(contributions, by = "cmte_id")
 ```
+
+
 

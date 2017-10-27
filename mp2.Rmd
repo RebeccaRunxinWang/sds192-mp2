@@ -6,17 +6,12 @@ output: html_document
 ---
 
 
-## Loading the data
+```{r}
+library(dplyr)
+library(tidyverse)
 
-<<<<<<< HEAD
-This project is so interesting and relevant to my life!
-Monday is the worst.
-Weddddd
-=======
-I like this class soooo much!!!!!!!1
+```
 
-
-22222222222
 
 ```{r, include=FALSE}
 load("house_elections.rda")
@@ -24,3 +19,9 @@ load("candidates.rda")
 load("committees.rda")
 load("contributions.rda")
 ```
+
+```{r}
+win <- house_elections %>%
+  filter(general_votes != 0)
+```
+

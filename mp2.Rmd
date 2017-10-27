@@ -9,7 +9,14 @@ output: html_document
 ```{r}
 library(dplyr)
 library(tidyverse)
+```
 
+```{r}
+data <- mutate(candidates, cand_party_affiliation = case_when(
+   cand_party_affiliation == "REP" ~ "R",
+   cand_party_affiliation == "DEM" ~ "D",
+   TRUE ~ cand_party_affiliation)
+)
 ```
 
 
@@ -28,5 +35,15 @@ general_votes <- house_elections %>%
 ```{r}
 committees_contribution <- committees %>%
   left_join(contributions, by = "cmte_id")
+```
+
+```{r}
+win <- house_elections %>%
+  filter(ge_winner == "W") %>%
+  filter(party == c("R", "D"))
+```
+
+```{r}
+
 ```
 

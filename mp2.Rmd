@@ -51,7 +51,7 @@ committees_contribution <- committees %>%
 
 ```{r}
 committees_contribution <- committees_contribution %>%
-  rename( "cand_id"= "cand_id.y")
+  rename( cand_id = cand_id.y)
 ```
 
 ```{r}
@@ -62,4 +62,5 @@ committees_contribution_2 <- committees_contribution %>%
 ```{r}
 FL_dataset <- committees_contribution_2 %>%
   right_join(List_winner1, by="cand_id")
+FL_dataset
 ```

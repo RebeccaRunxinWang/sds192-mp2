@@ -66,7 +66,7 @@ committees_contribution_2 <- committees_contribution %>%
 
 ```{r}
 new_file <- committees_contribution_2 %>%
-  select("transaction_amt", "cand_id.y", "city", "name", "state", "memo_cd", "memo_text")
+  select("cand_name", "cand_id", "cand_party_affiliation", "cmte_party_affiliation", "transaction_amt",  "name", "city","state", "memo_cd", "memo_text")
 ```
 
 

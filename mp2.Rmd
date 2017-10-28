@@ -51,11 +51,6 @@ FL_win <- house_elections %>%
 ```
 
 ```{r}
-new_file <- committees_contribution %>%
-  select("transaction_amt", "cand_id.y", "city", "name", "state", "memo_cd", "memo_text")
-```
-
-```{r}
 committees_contribution <- committees %>%
   left_join(contributions, by = "cmte_id")
 ```
@@ -70,7 +65,8 @@ committees_contribution_2 <- committees_contribution %>%
 ```
 
 ```{r}
-final <- committees_contribution_2%>%
-  
+new_file <- committees_contribution_2 %>%
+  select("transaction_amt", "cand_id.y", "city", "name", "state", "memo_cd", "memo_text")
 ```
+
 

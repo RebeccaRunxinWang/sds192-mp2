@@ -9,6 +9,7 @@ output: html_document
 ```{r}
 library(dplyr)
 library(tidyverse)
+library(plyr)
 ```
 
 ```{r}
@@ -67,3 +68,9 @@ committees_contribution <- rename(committees_contribution, replace=c("cand_id.y"
 committees_contribution_2 <- committees_contribution %>%
   right_join(candidates, by = "cand_id")
 ```
+
+```{r}
+final <- committees_contribution_2%>%
+  
+```
+

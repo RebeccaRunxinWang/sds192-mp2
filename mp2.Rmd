@@ -12,14 +12,6 @@ library(tidyverse)
 library(plyr)
 ```
 
-```{r}
-data <- mutate(candidates, cand_party_affiliation = case_when(
-   cand_party_affiliation == "REP" ~ "R",
-   cand_party_affiliation == "DEM" ~ "D",
-   TRUE ~ cand_party_affiliation)
-)
-```
-
 
 ```{r, include=FALSE}
 load("house_elections.rda")
@@ -29,25 +21,32 @@ load("contributions.rda")
 ```
 
 ```{r}
-general_votes <- house_elections %>%
-  filter(general_votes != 0) 
-```
-
-```{r}
 committees_contribution <- committees %>%
   left_join(contributions, by = "cmte_id")
 ```
 
 
 ```{r}
-FL_win <- house_elections %>%
+Fl_winner <- house_elections %>%
   filter(state == "FL") %>%
   filter(ge_winner == "W") %>%
-  filter(party == "R"| party == "D") %>%
+  filter(party == "R"| party == "D")
+List_winner1 <- Fl_winner %>%
+  mutate(upper_name=toupper(candidate_name)) %>%
+  select("upper_name") 
+List_winner1
+
+list_FL_winner <-  c (List_winner1)
+```
+
+
+
+```{r}
+FL_win <- Fl_winner %>%
   summarise(N = n(),
             r = sum(party == "R")) %>%
   mutate(r_percentage = r/N)
-
+FL_win
 ```
 
 ```{r}
@@ -56,8 +55,15 @@ committees_contribution <- committees %>%
 ```
 
 ```{r}
-committees_contribution <- rename(committees_contribution, replace=c("cand_id.y"="cand_id"))
+committees_contribution <- committees_contribution %>%
+  rename( "cand_id"= "cand_id.y")
 ```
+
+```{r}
+house_elections <- house_elections %>%
+  rename("cand_name" = "candidate_name" )
+```
+
 
 ```{r}
 committees_contribution_2 <- committees_contribution %>%
@@ -69,4 +75,13 @@ new_file <- committees_contribution_2 %>%
   select("cand_name", "cand_id", "cand_party_affiliation", "cmte_party_affiliation", "transaction_amt",  "name", "city","state", "memo_cd", "memo_text")
 ```
 
+```{r}
+final_dataset <- house_elections %>%
+  left_join(new_file, by = "cand_name")
+```
 
+
+```{r}
+ subset(new_file,list_FL_winner %in% cand_name)
+
+```

@@ -5,7 +5,6 @@ date: "October 31, 2017"
 output: html_document
 ---
 
-
 ```{r}
 library(dplyr)
 library(tidyverse)
@@ -32,6 +31,16 @@ List_winner1 <- Fl_winner %>%
   select("cand_name","fec_id") %>%
   rename("cand_id"="fec_id")
 List_winner1
+```
+
+```{r}
+Fl_general_candidates <- house_elections %>%
+  filter(state == "FL") %>%
+  filter(ge_winner == "W"| general_votes > 0 & ge_winner == "N") %>%
+  filter(party == "R"| party == "D") %>%
+  select("cand_name","fec_id","district","general_votes","ge_winner") %>%
+  rename("cand_id"="fec_id")
+Fl_general_candidates
 ```
 
 
@@ -61,6 +70,19 @@ committees_contribution_2 <- committees_contribution %>%
 
 ```{r}
 FL_dataset <- committees_contribution_2 %>%
-  right_join(List_winner1, by="cand_id")
+  right_join(Fl_general_candidates, by="cand_id") %>%
+  filter(cand_office=="H" ) %>%
+  filter(cmte_party_affiliation=="DEM" | cmte_party_affiliation=="REP") %>%
+  filter(transaction_type=="24A" | transaction_type=="24E") %>%
+  rename(cand_name= cand_name.y) %>%
+  select("cand_name","district","ge_winner","cand_id","cand_party_affiliation","cmte_party_affiliation","cmte_name","cmte_id","cmte_state","cmte_type","transaction_type","transaction_amt","memo_text")
 FL_dataset
+```
+```{r}
+FL_dataset %>%
+  group_by(district) %>%
+  filter(transaction_type=="24E")
+
+
+
 ```

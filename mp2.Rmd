@@ -71,17 +71,30 @@ committees_contribution_2 <- committees_contribution %>%
 ```{r}
 FL_dataset <- committees_contribution_2 %>%
   right_join(Fl_general_candidates, by="cand_id") %>%
-  filter(cand_office=="H" ) %>%
-  filter(cmte_party_affiliation=="DEM" | cmte_party_affiliation=="REP") %>%
-  filter(transaction_type=="24A" | transaction_type=="24E") %>%
   rename(cand_name= cand_name.y) %>%
-  select("cand_name","district","ge_winner","cand_id","cand_party_affiliation","cmte_party_affiliation","cmte_name","cmte_id","cmte_state","cmte_type","transaction_type","transaction_amt","memo_text")
+    filter(cand_office=="H" ) %>%
+  select("cand_name","district","cmte_dsgn","ge_winner","cand_id","cand_party_affiliation","cmte_party_affiliation","cmte_name","cmte_id","cmte_state","cmte_type","transaction_type","transaction_amt","memo_text")
 FL_dataset
 ```
 ```{r}
-FL_dataset %>%
-  group_by(district) %>%
-  filter(transaction_type=="24E")
+FL_dataset_2 <- FL_dataset %>%
+  filter(cmte_party_affiliation=="DEM" | cmte_party_affiliation=="REP") %>%
+  group_by(district,cand_name,cand_party_affiliation) %>%
+  summarise(sum_for=sum(ifelse( transaction_type=="24C"| transaction_type=="24E" | transaction_type=="24F"| transaction_type=="24H" | transaction_type=="24K" | transaction_type=="24P" | transaction_type=="24R" | transaction_type=="24Z",transaction_amt, 0)), sum_against=sum(ifelse( transaction_type=="24A"| transaction_type=="24N",transaction_amt, 0))) %>%
+mutate(sum_for-sum_against)
+
+```
+
+```{r}
+FL_dataset_3 <- FL_dataset_2 %>%
+group_by(district_name = district + cand_name)
+```
+
+FL_dataset_3[1:2,"sum_against"] <- FL_dataset_3[2:1,"sum_against"]
+
+```
+
+  mutate(for= transaction_type=="24C"| transaction_type=="24E" | transaction_type=="24F"| transaction_type=="24H" | transaction_type=="24K" | transaction_type=="24P" | transaction_type=="24R" | transaction_type=="24Z") %>%
 
 
 

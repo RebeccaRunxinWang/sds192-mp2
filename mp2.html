@@ -170,6 +170,27 @@ List_winner1</code></pre>
 ##  9                 Desantis, Ron H2FL00292
 ## 10                  Miller, Jeff H2FL01100
 ## # ... with 17 more rows</code></pre>
+<pre class="r"><code>Fl_general_candidates &lt;- house_elections %&gt;%
+  filter(state == &quot;FL&quot;) %&gt;%
+  filter(ge_winner == &quot;W&quot;| general_votes &gt; 0 &amp; ge_winner == &quot;N&quot;) %&gt;%
+  filter(party == &quot;R&quot;| party == &quot;D&quot;) %&gt;%
+  select(&quot;cand_name&quot;,&quot;fec_id&quot;,&quot;district&quot;,&quot;general_votes&quot;,&quot;ge_winner&quot;) %&gt;%
+  rename(&quot;cand_id&quot;=&quot;fec_id&quot;)
+Fl_general_candidates</code></pre>
+<pre><code>## # A tibble: 48 x 5
+##                        cand_name   cand_id district general_votes
+##                            &lt;chr&gt;     &lt;chr&gt;    &lt;chr&gt;         &lt;int&gt;
+##  1                    Lawson, Al H0FL02086       02        157634
+##  2            Southerland, Steve H0FL02110       02        175856
+##  3               Crenshaw, Ander H0FL04066       04        239988
+##  4 &quot;Nugent, Richard B. \&quot;Rich\&quot;&quot; H0FL05139       11        218360
+##  5              Beaven, Heather  H0FL07077       06        146489
+##  6              Webster, Daniel  H0FL08208       10        164649
+##  7                  Ross, Dennis H0FL12101       15             0
+##  8                   Roach, Jim  H0FL14065       19        109746
+##  9             Roberts, Shannon  H0FL15054       08        130870
+## 10          Wilson, Frederica S. H0FL17068       24             0
+## # ... with 38 more rows, and 1 more variables: ge_winner &lt;chr&gt;</code></pre>
 <pre class="r"><code>FL_win &lt;- Fl_winner %&gt;%
   summarise(N = n(),
             r = sum(party == &quot;R&quot;)) %&gt;%
@@ -182,11 +203,47 @@ FL_win</code></pre>
 <pre class="r"><code>committees_contribution &lt;- committees %&gt;%
   left_join(contributions, by = &quot;cmte_id&quot;)</code></pre>
 <pre class="r"><code>committees_contribution &lt;- committees_contribution %&gt;%
-  rename( &quot;cand_id&quot;= &quot;cand_id.y&quot;)</code></pre>
+  rename( cand_id = cand_id.y)</code></pre>
 <pre class="r"><code>committees_contribution_2 &lt;- committees_contribution %&gt;%
   right_join(candidates, by = &quot;cand_id&quot;)</code></pre>
 <pre class="r"><code>FL_dataset &lt;- committees_contribution_2 %&gt;%
-  right_join(List_winner1, by=&quot;cand_id&quot;)</code></pre>
+  right_join(Fl_general_candidates, by=&quot;cand_id&quot;) %&gt;%
+  filter(cand_office==&quot;H&quot; ) %&gt;%
+  filter(cmte_party_affiliation==&quot;DEM&quot; | cmte_party_affiliation==&quot;REP&quot;) %&gt;%
+  filter(transaction_type==&quot;24A&quot; | transaction_type==&quot;24E&quot;) %&gt;%
+  rename(cand_name= cand_name.y) %&gt;%
+  select(&quot;cand_name&quot;,&quot;district&quot;,&quot;ge_winner&quot;,&quot;cand_id&quot;,&quot;cand_party_affiliation&quot;,&quot;cmte_party_affiliation&quot;,&quot;cmte_name&quot;,&quot;cmte_id&quot;,&quot;cmte_state&quot;,&quot;cmte_type&quot;,&quot;transaction_type&quot;,&quot;transaction_amt&quot;,&quot;memo_text&quot;)
+FL_dataset</code></pre>
+<pre><code>## # A tibble: 50 x 13
+##             cand_name district ge_winner   cand_id cand_party_affiliation
+##                 &lt;chr&gt;    &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;                  &lt;chr&gt;
+##  1         Lawson, Al       02         N H0FL02086                    DEM
+##  2         Lawson, Al       02         N H0FL02086                    DEM
+##  3         Lawson, Al       02         N H0FL02086                    DEM
+##  4         Lawson, Al       02         N H0FL02086                    DEM
+##  5 Southerland, Steve       02         W H0FL02110                    REP
+##  6 Southerland, Steve       02         W H0FL02110                    REP
+##  7 Southerland, Steve       02         W H0FL02110                    REP
+##  8 Southerland, Steve       02         W H0FL02110                    REP
+##  9 Southerland, Steve       02         W H0FL02110                    REP
+## 10 Southerland, Steve       02         W H0FL02110                    REP
+## # ... with 40 more rows, and 8 more variables:
+## #   cmte_party_affiliation &lt;chr&gt;, cmte_name &lt;chr&gt;, cmte_id &lt;chr&gt;,
+## #   cmte_state &lt;chr&gt;, cmte_type &lt;chr&gt;, transaction_type &lt;chr&gt;,
+## #   transaction_amt &lt;dbl&gt;, memo_text &lt;chr&gt;</code></pre>
+<pre class="r"><code>FL_dataset %&gt;%
+  group_by(district) %&gt;%
+  filter(transaction_type==&quot;24E&quot;)</code></pre>
+<pre><code>## # A tibble: 3 x 13
+## # Groups:   district [1]
+##        cand_name district ge_winner   cand_id cand_party_affiliation
+##            &lt;chr&gt;    &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;                  &lt;chr&gt;
+## 1 Grayson, Alan        09         W H6FL08213                    DEM
+## 2 Grayson, Alan        09         W H6FL08213                    DEM
+## 3 Grayson, Alan        09         W H6FL08213                    DEM
+## # ... with 8 more variables: cmte_party_affiliation &lt;chr&gt;,
+## #   cmte_name &lt;chr&gt;, cmte_id &lt;chr&gt;, cmte_state &lt;chr&gt;, cmte_type &lt;chr&gt;,
+## #   transaction_type &lt;chr&gt;, transaction_amt &lt;dbl&gt;, memo_text &lt;chr&gt;</code></pre>
 
 
 
